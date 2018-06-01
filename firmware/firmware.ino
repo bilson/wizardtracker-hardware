@@ -1,5 +1,7 @@
 #include <stdint.h>
-#include <avr/pgmspace.h>
+#ifndef ESP32
+    #include <avr/pgmspace.h>
+#endif
 
 #include "Config.h"
 
@@ -8,14 +10,17 @@
 #include "Monitor.h"
 #include "Timer.h"
 
+#ifndef ESP32
 
-#ifndef cbi
-    #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
-#endif
+    #ifndef cbi
+        #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
+    #endif
+  
+    #ifndef sbi
+        #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
+    #endif
 
-#ifndef sbi
-    #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
-#endif
+#endif // ESP32
 
 
 Receiver receivers[RECEIVER_COUNT];
@@ -39,7 +44,10 @@ const char lineEnding = '\n';
 
 
 void setup() {
+
+#ifndef ESP32
     enableFastAdcRead();
+#endif
 
     // Set pin defaults.
     pinMode(LED_PIN, OUTPUT);
@@ -50,9 +58,9 @@ void setup() {
     digitalWrite(RECEIVER_PIN_SPI_DATA, LOW);
 
     for (uint8_t i = 0; i < RECEIVER_COUNT; i++) {
-        pinMode(RECEIVER_PIN_SPI_SS_START - i, OUTPUT);
-        pinMode(RECEIVER_PIN_RSSI_START + i, INPUT);
-        digitalWrite(RECEIVER_PIN_SPI_SS_START + i, HIGH);
+        pinMode(RECEIVER_PINS_SPI_SS[i], OUTPUT);
+        pinMode(RECEIVER_PINS_RSSI[i], INPUT);
+        digitalWrite(RECEIVER_PINS_SPI_SS[i], HIGH);
     }
 
     #ifdef TEMP_MONITORING_ENABLED
@@ -73,8 +81,8 @@ void setup() {
         receivers[i].init(
             RECEIVER_PIN_SPI_CLK,
             RECEIVER_PIN_SPI_DATA,
-            RECEIVER_PIN_SPI_SS_START - i,
-            RECEIVER_PIN_RSSI_START + i,
+            RECEIVER_PINS_SPI_SS[i],
+            RECEIVER_PINS_RSSI[i],
             EepromSettings.rssiMin[i],
             EepromSettings.rssiMax[i]
         );
@@ -230,8 +238,12 @@ void parseCommands() {
     }
 }
 
+#ifndef ESP32
+
 void enableFastAdcRead() {
     sbi(ADCSRA, ADPS2);
     cbi(ADCSRA, ADPS1);
     cbi(ADCSRA, ADPS0);
 }
+
+#endif // ESP32

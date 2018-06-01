@@ -32,8 +32,8 @@ void Receiver::updateRssi() {
     analogRead(this->rssiPin); // Fake read to settle ADC
     this->rssiRaw = analogRead(this->rssiPin);
     this->rssi = constrain(
-        map(this->rssiRaw, this->rssiMin, this->rssiMax, 0, 255),
-        0,
+        map(this->rssiRaw, this->rssiMin, this->rssiMax, 1, 255),
+        1,
         255
     );
 }

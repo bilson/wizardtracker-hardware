@@ -3,7 +3,10 @@
 
 
 #include <stdint.h>
-#include <avr/pgmspace.h>
+
+#ifndef ESP32
+    #include <avr/pgmspace.h>
+#endif
 
 #include "Config.h"
 
@@ -30,11 +33,11 @@ struct EepromSettings {
 PROGMEM const struct {
     uint32_t magic = EEPROM_MAGIC;
 
-    uint16_t frequency[RECEIVER_COUNT] = { 5800 };
-    uint16_t rssiMin[RECEIVER_COUNT] = { 0 };
-    uint16_t rssiMax[RECEIVER_COUNT] = { 1023 };
-} EepromDefaults;
+    uint16_t frequency[RECEIVER_COUNT] = {5658, 5732, 5806, 5880};
+    uint16_t rssiMin[RECEIVER_COUNT]   = {1, 1, 1, 1};
+    uint16_t rssiMax[RECEIVER_COUNT]   = {1023, 1023, 1023, 1023};
 
+} EepromDefaults;
 
 extern EepromSettings EepromSettings;
 

@@ -1,23 +1,40 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+// If board is ESP32, uncomment this
+// #define ESP32
 
 // Receivers
 // ==============
 
 // Number of receivers on the board. Make sure these are sequentially connected
 // to the pins --- no gaps!
-#define RECEIVER_COUNT 6
+#define RECEIVER_COUNT 4
 
-#define RECEIVER_PIN_SPI_CLK 2
-#define RECEIVER_PIN_SPI_DATA 3
-#define RECEIVER_PIN_SPI_SS_START 11
-#define RECEIVER_PIN_RSSI_START A0
+#ifdef ESP32
+
+    #define RECEIVER_PIN_SPI_CLK 18
+    #define RECEIVER_PIN_SPI_DATA 19
+  
+    const int RECEIVER_PINS_SPI_SS[] = {5, 17, 16, 4};
+    const int RECEIVER_PINS_RSSI[] = {36, 39, 34, 35};
+
+#else
+
+    #define RECEIVER_PIN_SPI_CLK 2
+    #define RECEIVER_PIN_SPI_DATA 3
+  
+    const int RECEIVER_PINS_SPI_SS[] = {11, 12, 13, 14};
+    const int RECEIVER_PINS_RSSI[] = {A0, A1, A2, A3};
+
+#endif
 
 
 // Temperature Monitoring
 // ======================
-#define TEMP_MONITORING_ENABLED
+#ifndef ESP32
+    #define TEMP_MONITORING_ENABLED
+#endif
 
 #ifdef TEMP_MONITORING_ENABLED
     #define TEMP_MONITORING_PIN A7
@@ -30,7 +47,9 @@
 
 // Voltage Monitoring
 // ==================
-#define VOLTAGE_MONITORING_ENABLED
+#ifndef ESP32
+    #define VOLTAGE_MONITORING_ENABLED
+#endif
 
 #ifdef VOLTAGE_MONITORING_ENABLED
     #define VOLTAGE_MONITORING_PIN A6
@@ -48,7 +67,11 @@
 
 // Delay between RSSI messages. Too fast and the buffer clogs and things get
 // weird. 2ms is a good default value.
-#define RSSI_DELAY_MS 2
+#ifdef ESP32
+    #define RSSI_DELAY_MS 1
+#else
+    #define RSSI_DELAY_MS 2
+#endif // ESP32
 
 // Delay between monitoring messages.
 #define MONITORING_DELAY_MS 10000
@@ -63,8 +86,12 @@
 
 // =============================================================================
 
+#ifdef ESP32
+    #define LED_PIN LED_BUILTIN
+#else
+    #define LED_PIN 13
+#endif
 
-#define LED_PIN 13
 
 #if defined(VOLTAGE_MONITORING_ENABLED) || defined(TEMP_MONITORING_ENABLED)
     #define MONITORING_ENABLED
