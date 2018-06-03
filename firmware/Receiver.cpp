@@ -29,11 +29,15 @@ void Receiver::setFrequency(uint16_t frequency) {
 }
 
 void Receiver::setRssiMin(uint16_t rssi) {
-    this->rssiMin = rssi;
+    if(rssi < this->rssiMax) {
+        this->rssiMin = rssi;
+    }
 }
 
 void Receiver::setRssiMax(uint16_t rssi) {
-    this->rssiMax = rssi;
+    if(rssi > this->rssiMin) {
+        this->rssiMax = rssi;
+    }
 }
 
 void Receiver::updateRssi() {
