@@ -28,6 +28,14 @@ void Receiver::setFrequency(uint16_t frequency) {
     this->driver.setSynthRegisterB(synthRegB);
 }
 
+void Receiver::setRssiMin(uint16_t rssi) {
+    this->rssiMin = rssi;
+}
+
+void Receiver::setRssiMax(uint16_t rssi) {
+    this->rssiMax = rssi;
+}
+
 void Receiver::updateRssi() {
     analogRead(this->rssiPin); // Fake read to settle ADC
     this->rssiRaw = analogRead(this->rssiPin);

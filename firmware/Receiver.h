@@ -18,6 +18,8 @@ class Receiver {
         );
 
         void updateRssi();
+        void setRssiMin(uint16_t rssi);
+        void setRssiMax(uint16_t rssi);
         void setFrequency(uint16_t frequency);
 
         uint16_t rssiRaw;

@@ -8,6 +8,14 @@ struct EepromSettings EepromSettings;
 
 
 void EepromSettings::load() {
+
+#ifdef ESP32
+    if (!EEPROM.begin(EEPROM_SIZE))
+    {
+      Serial.println("failed to initialise EEPROM"); delay(10000);
+    }
+#endif
+
     EEPROM.get(0, *this);
 
     if (this->magic != EEPROM_MAGIC)
@@ -16,6 +24,9 @@ void EepromSettings::load() {
 
 void EepromSettings::save() {
     EEPROM.put(0, *this);
+#ifdef ESP32
+    EEPROM.commit();
+#endif
 }
 
 

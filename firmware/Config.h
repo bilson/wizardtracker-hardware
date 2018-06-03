@@ -13,6 +13,8 @@
 
 #ifdef ESP32
 
+    #define EEPROM_SIZE 4096
+
     #define RECEIVER_PIN_SPI_CLK 18
     #define RECEIVER_PIN_SPI_DATA 19
   

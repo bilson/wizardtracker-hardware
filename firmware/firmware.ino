@@ -1,6 +1,9 @@
 #include <stdint.h>
-#ifndef ESP32
-    #include <avr/pgmspace.h>
+
+#if (defined(__AVR__))
+    #include <avr\pgmspace.h>
+#else
+    #include <pgmspace.h>
 #endif
 
 #include "Config.h"
@@ -204,8 +207,8 @@ void parseCommands() {
                 for (uint8_t i = 0; i < RECEIVER_COUNT; i++) {
                     EepromSettings.rssiMin[i] =
                         (uint16_t) receivers[i].rssiRaw;
+                    receivers[i].setRssiMin(receivers[i].rssiRaw);
                 }
-
                 EepromSettings.save();
             } break;
 
@@ -214,6 +217,7 @@ void parseCommands() {
                 for (uint8_t i = 0; i < RECEIVER_COUNT; i++) {
                     EepromSettings.rssiMax[i] =
                         (uint16_t) receivers[i].rssiRaw;
+                    receivers[i].setRssiMax(receivers[i].rssiRaw);
                 }
 
                 EepromSettings.save();
